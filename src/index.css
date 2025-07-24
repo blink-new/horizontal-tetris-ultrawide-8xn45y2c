@@ -57,6 +57,15 @@
   }
 }
 
+/* Tetris piece background colors */
+.bg-piece-i { background-color: hsl(var(--piece-i)); }
+.bg-piece-o { background-color: hsl(var(--piece-o)); }
+.bg-piece-t { background-color: hsl(var(--piece-t)); }
+.bg-piece-s { background-color: hsl(var(--piece-s)); }
+.bg-piece-z { background-color: hsl(var(--piece-z)); }
+.bg-piece-j { background-color: hsl(var(--piece-j)); }
+.bg-piece-l { background-color: hsl(var(--piece-l)); }
+
 /* Game-specific styles with neon glow effects */
 .tetris-cell {
   @apply border border-slate-700/30 transition-all duration-150;

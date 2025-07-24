@@ -34,7 +34,7 @@ function App() {
           {/* Center - Game board and title */}
           <div className="flex-1 flex flex-col">
             {/* Game board area */}
-            <div className="flex-1 flex justify-center items-start pt-8">
+            <div className="flex-1 flex flex-col justify-start items-center pt-8">
               <div className="relative w-full max-w-none">
                 <GameBoard gameState={gameState} />
                 {gameState.isPaused && (
@@ -43,13 +43,13 @@ function App() {
                   </div>
                 )}
               </div>
-            </div>
-            
-            {/* Title below game board */}
-            <div className="text-center py-6">
-              <h1 className="text-5xl font-bold text-primary neon-text font-poppins">
-                The LUMI tetris
-              </h1>
+              
+              {/* Title positioned directly under the game grid */}
+              <div className="mt-6">
+                <h1 className="text-4xl font-bold text-primary neon-text font-poppins">
+                  The LUMI tetris
+                </h1>
+              </div>
             </div>
           </div>
 
