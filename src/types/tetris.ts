@@ -20,6 +20,8 @@ export interface GameState {
   lines: number;
   isGameOver: boolean;
   isPaused: boolean;
+  clearingColumns: number[]; // Columns currently being cleared with animation
+  isClearing: boolean; // Whether line clearing animation is in progress
 }
 
 export const PIECE_SHAPES = {

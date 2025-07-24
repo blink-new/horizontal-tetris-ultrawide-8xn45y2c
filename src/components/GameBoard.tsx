@@ -17,7 +17,7 @@ const CELL_COLORS: Record<CellState, string> = {
 };
 
 export const GameBoard: React.FC<GameBoardProps> = ({ gameState }) => {
-  const { board, currentPiece } = gameState;
+  const { board, currentPiece, clearingColumns } = gameState;
 
   // Create a display board with the current piece overlaid
   const displayBoard = board.map(row => [...row]);
@@ -53,16 +53,19 @@ export const GameBoard: React.FC<GameBoardProps> = ({ gameState }) => {
       }}
     >
       {displayBoard.map((row, y) =>
-        row.map((cell, x) => (
-          <div
-            key={`${x}-${y}`}
-            className={`tetris-cell ${cell !== 0 ? 'filled' : ''} ${CELL_COLORS[cell]} transition-colors duration-100`}
-            style={{
-              minWidth: '20px',
-              minHeight: '20px',
-            }}
-          />
-        ))
+        row.map((cell, x) => {
+          const isClearing = clearingColumns.includes(x);
+          return (
+            <div
+              key={`${x}-${y}`}
+              className={`tetris-cell ${cell !== 0 ? 'filled' : ''} ${CELL_COLORS[cell]} ${isClearing ? 'line-clearing' : ''} transition-colors duration-100`}
+              style={{
+                minWidth: '20px',
+                minHeight: '20px',
+              }}
+            />
+          );
+        })
       )}
     </div>
   );

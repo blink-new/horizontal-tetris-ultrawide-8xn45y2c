@@ -68,6 +68,27 @@ const placePiece = (board: CellState[][], piece: Piece): CellState[][] => {
   return newBoard;
 };
 
+const findFullColumns = (board: CellState[][]): number[] => {
+  const fullColumns: number[] = [];
+  
+  // Check vertical columns (since we're horizontal)
+  for (let x = 0; x < BOARD_WIDTH; x++) {
+    let isFullColumn = true;
+    for (let y = 0; y < BOARD_HEIGHT; y++) {
+      if (board[y][x] === 0) {
+        isFullColumn = false;
+        break;
+      }
+    }
+    
+    if (isFullColumn) {
+      fullColumns.push(x);
+    }
+  }
+  
+  return fullColumns;
+};
+
 const clearLines = (board: CellState[][]): { newBoard: CellState[][]; linesCleared: number } => {
   const newBoard = [...board];
   let linesCleared = 0;
@@ -107,11 +128,49 @@ export const useTetris = () => {
     level: 1,
     lines: 0,
     isGameOver: false,
-    isPaused: false
+    isPaused: false,
+    clearingColumns: [],
+    isClearing: false
   });
 
   const gameLoopRef = useRef<NodeJS.Timeout>();
   const dropTimeRef = useRef(1000);
+
+  // Handle animated line clearing
+  const handleLineClearAnimation = useCallback((board: CellState[][]) => {
+    const fullColumns = findFullColumns(board);
+    
+    if (fullColumns.length === 0) {
+      return; // No lines to clear
+    }
+
+    // Start the animation by marking columns as clearing
+    setGameState(prev => ({
+      ...prev,
+      clearingColumns: fullColumns,
+      isClearing: true
+    }));
+
+    // After animation completes, actually clear the lines
+    setTimeout(() => {
+      setGameState(prev => {
+        const { newBoard, linesCleared } = clearLines(prev.board);
+        const newScore = prev.score + (linesCleared * 100 * prev.level);
+        const newLines = prev.lines + linesCleared;
+        const newLevel = Math.floor(newLines / 10) + 1;
+
+        return {
+          ...prev,
+          board: newBoard,
+          score: newScore,
+          level: newLevel,
+          lines: newLines,
+          clearingColumns: [],
+          isClearing: false
+        };
+      });
+    }, 600); // Animation duration: 5 flashes × 0.12s = 0.6s
+  }, []);
 
   const movePiece = useCallback((direction: 'right' | 'down' | 'up') => {
     setGameState(prev => {
@@ -144,30 +203,29 @@ export const useTetris = () => {
       // If moving right (gravity) fails, place the piece
       if (direction === 'right') {
         const newBoard = placePiece(prev.board, prev.currentPiece);
-        const { newBoard: clearedBoard, linesCleared } = clearLines(newBoard);
-        
-        const newScore = prev.score + (linesCleared * 100 * prev.level) + 10;
-        const newLines = prev.lines + linesCleared;
-        const newLevel = Math.floor(newLines / 10) + 1;
-        
         const nextPiece = createRandomPiece();
-        const isGameOver = !isValidPosition(clearedBoard, prev.nextPiece!, prev.nextPiece!.position);
+        const isGameOver = !isValidPosition(newBoard, prev.nextPiece!, prev.nextPiece!.position);
         
-        return {
+        const newState = {
           ...prev,
-          board: clearedBoard,
+          board: newBoard,
           currentPiece: isGameOver ? null : prev.nextPiece,
           nextPiece: nextPiece,
-          score: newScore,
-          level: newLevel,
-          lines: newLines,
+          score: prev.score + 10, // Base score for placing piece
           isGameOver
         };
+
+        // Check for line clearing after placing the piece
+        setTimeout(() => {
+          handleLineClearAnimation(newBoard);
+        }, 100); // Small delay to show piece placement first
+
+        return newState;
       }
 
       return prev;
     });
-  }, []);
+  }, [handleLineClearAnimation]);
 
   const rotatePieceHandler = useCallback(() => {
     setGameState(prev => {
@@ -200,27 +258,26 @@ export const useTetris = () => {
       }
 
       const newBoard = placePiece(prev.board, newPiece);
-      const { newBoard: clearedBoard, linesCleared } = clearLines(newBoard);
-      
-      const newScore = prev.score + (linesCleared * 100 * prev.level) + 20;
-      const newLines = prev.lines + linesCleared;
-      const newLevel = Math.floor(newLines / 10) + 1;
-      
       const nextPiece = createRandomPiece();
-      const isGameOver = !isValidPosition(clearedBoard, prev.nextPiece!, prev.nextPiece!.position);
+      const isGameOver = !isValidPosition(newBoard, prev.nextPiece!, prev.nextPiece!.position);
       
-      return {
+      const newState = {
         ...prev,
-        board: clearedBoard,
+        board: newBoard,
         currentPiece: isGameOver ? null : prev.nextPiece,
         nextPiece: nextPiece,
-        score: newScore,
-        level: newLevel,
-        lines: newLines,
+        score: prev.score + 20, // Base score for hard drop
         isGameOver
       };
+
+      // Check for line clearing after placing the piece
+      setTimeout(() => {
+        handleLineClearAnimation(newBoard);
+      }, 100); // Small delay to show piece placement first
+
+      return newState;
     });
-  }, []);
+  }, [handleLineClearAnimation]);
 
   const pauseGame = useCallback(() => {
     setGameState(prev => ({ ...prev, isPaused: !prev.isPaused }));
@@ -235,7 +292,9 @@ export const useTetris = () => {
       level: 1,
       lines: 0,
       isGameOver: false,
-      isPaused: false
+      isPaused: false,
+      clearingColumns: [],
+      isClearing: false
     });
   }, []);
 
