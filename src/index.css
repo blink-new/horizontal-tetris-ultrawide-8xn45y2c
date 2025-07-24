@@ -30,14 +30,14 @@
     --chart-5: 0 84% 60%;
     --radius: 0.5rem;
     
-    /* Tetris piece colors - variations of main orange */
-    --piece-i: 25 100% 55%; /* Bright orange #ff8800 */
-    --piece-o: 40 94% 68%; /* Light orange (same as accent) */
-    --piece-t: 20 100% 45%; /* Dark orange #e67300 */
-    --piece-s: 30 90% 60%; /* Medium orange #f5a623 */
-    --piece-z: 15 100% 40%; /* Deep orange #cc5500 */
-    --piece-j: 35 85% 65%; /* Golden orange #f2c94c */
-    --piece-l: 10 100% 35%; /* Burnt orange #b34700 */
+    /* Tetris piece colors - bright saturated orange variations */
+    --piece-i: 30 100% 65%; /* Bright saturated orange */
+    --piece-o: 45 100% 70%; /* Golden yellow-orange */
+    --piece-t: 25 100% 60%; /* Vivid orange */
+    --piece-s: 35 100% 65%; /* Bright amber */
+    --piece-z: 15 100% 55%; /* Red-orange */
+    --piece-j: 40 100% 68%; /* Golden orange */
+    --piece-l: 20 100% 50%; /* Deep bright orange */
   }
 }
 
@@ -110,6 +110,15 @@
     0 0 20px hsl(var(--primary) / 15%),
     inset 0 0 20px hsl(var(--primary) / 5%),
     0 0 40px hsl(var(--primary) / 8%);
+}
+
+/* General neon glow utility */
+.neon-glow {
+  background: hsl(var(--card) / 50%);
+  border: 1px solid hsl(var(--primary) / 20%);
+  box-shadow: 
+    0 0 15px hsl(var(--primary) / 10%),
+    inset 0 0 15px hsl(var(--primary) / 3%);
 }
 
 /* Neon glow for text elements */

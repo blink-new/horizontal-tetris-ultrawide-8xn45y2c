@@ -15,51 +15,58 @@ function App() {
       <div className="fixed inset-0 bg-gradient-to-br from-background via-background to-slate-900/50 -z-10" />
       
       {/* Main game container */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary mb-2 neon-text">
-            The LUMI tetris
-          </h1>
-          <p className="text-muted-foreground">
-            Optimized for ultra-wide displays • Pieces fall left to right
-          </p>
-          {gameState.isPaused && (
-            <div className="mt-4 text-accent font-medium neon-text">
+      <div className="container mx-auto px-4 py-4 h-screen flex flex-col">
+        {gameState.isPaused && (
+          <div className="text-center py-2">
+            <div className="text-accent font-medium neon-text">
               Game Paused - Press P to resume
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Game layout - Game board takes 2/3 width, sidebars share remaining 1/3 */}
-        <div className="flex gap-6 items-start max-w-[95vw] mx-auto">
-          {/* Left sidebar - Stats (1/6 of total width) */}
-          <div className="flex-shrink-0 w-[16.67%] min-w-[250px]">
+        {/* Game layout - Maximized for screen space */}
+        <div className="flex gap-4 flex-1 max-w-[98vw] mx-auto">
+          {/* Left sidebar - Stats (narrower) */}
+          <div className="flex-shrink-0 w-[180px] pt-8">
             <GameStats gameState={gameState} />
           </div>
 
-          {/* Center - Game board (2/3 of total width) */}
-          <div className="flex-1 flex justify-center">
-            <div className="relative w-full max-w-none">
-              <GameBoard gameState={gameState} />
-              {gameState.isPaused && (
-                <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center rounded-lg">
-                  <div className="text-2xl font-bold text-accent neon-text">PAUSED</div>
-                </div>
-              )}
+          {/* Center - Game board and title */}
+          <div className="flex-1 flex flex-col">
+            {/* Game board area */}
+            <div className="flex-1 flex justify-center items-start pt-8">
+              <div className="relative w-full max-w-none">
+                <GameBoard gameState={gameState} />
+                {gameState.isPaused && (
+                  <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center rounded-lg">
+                    <div className="text-2xl font-bold text-accent neon-text">PAUSED</div>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Title below game board */}
+            <div className="text-center py-6">
+              <h1 className="text-5xl font-bold text-primary neon-text font-poppins">
+                The LUMI tetris
+              </h1>
             </div>
           </div>
 
-          {/* Right sidebar - Controls and Next piece (1/6 of total width) */}
-          <div className="flex-shrink-0 w-[16.67%] min-w-[250px] space-y-6">
+          {/* Right sidebar - Next piece only (narrower) */}
+          <div className="flex-shrink-0 w-[180px] pt-8">
             <NextPiece piece={gameState.nextPiece} />
-            <GameControls
-              isPaused={gameState.isPaused}
-              isGameOver={gameState.isGameOver}
-              onPause={pauseGame}
-              onReset={resetGame}
-              onRotate={rotatePiece}
-              onHardDrop={hardDrop}
-            />
+            {/* Simple pause/reset controls without buttons */}
+            <div className="mt-6 p-4 bg-card/50 rounded-lg border border-primary/20 neon-glow">
+              <h3 className="text-sm font-medium text-primary mb-3 neon-text">Controls</h3>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                <div>← Rotate piece</div>
+                <div>→ Move right</div>
+                <div>↑↓ Move vertically</div>
+                <div>Space - Hard drop</div>
+                <div>P - Pause/Resume</div>
+              </div>
+            </div>
           </div>
         </div>
 
