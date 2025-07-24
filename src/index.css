@@ -57,21 +57,25 @@
   }
 }
 
-/* Tetris piece background colors */
-.bg-piece-i { background-color: hsl(var(--piece-i)); }
-.bg-piece-o { background-color: hsl(var(--piece-o)); }
-.bg-piece-t { background-color: hsl(var(--piece-t)); }
-.bg-piece-s { background-color: hsl(var(--piece-s)); }
-.bg-piece-z { background-color: hsl(var(--piece-z)); }
-.bg-piece-j { background-color: hsl(var(--piece-j)); }
-.bg-piece-l { background-color: hsl(var(--piece-l)); }
+/* Tetris piece background colors - with higher specificity */
+.tetris-cell.bg-piece-i { background-color: hsl(var(--piece-i)) !important; }
+.tetris-cell.bg-piece-o { background-color: hsl(var(--piece-o)) !important; }
+.tetris-cell.bg-piece-t { background-color: hsl(var(--piece-t)) !important; }
+.tetris-cell.bg-piece-s { background-color: hsl(var(--piece-s)) !important; }
+.tetris-cell.bg-piece-z { background-color: hsl(var(--piece-z)) !important; }
+.tetris-cell.bg-piece-j { background-color: hsl(var(--piece-j)) !important; }
+.tetris-cell.bg-piece-l { background-color: hsl(var(--piece-l)) !important; }
 
 /* Game-specific styles with neon glow effects */
 .tetris-cell {
   @apply border border-slate-700/30 transition-all duration-150;
 
-  background: hsl(var(--background) / 80%);
   box-shadow: inset 0 0 10px hsl(var(--primary) / 5%);
+}
+
+/* Empty cells get background color */
+.tetris-cell:not(.filled) {
+  background: hsl(var(--background) / 80%);
 }
 
 .tetris-cell.filled {
